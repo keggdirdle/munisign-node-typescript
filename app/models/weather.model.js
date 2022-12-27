@@ -1,0 +1,1 @@
+import { WeatherModel } from './weather.model';

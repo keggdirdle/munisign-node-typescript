@@ -1,0 +1,22 @@
+#pi@raspberrypi:/etc/systemd/system $ cat TrainSign.service
+[Unit]
+Description=Train Sign Service
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+WorkingDirectory=/home/pi/Muni/MuniSign/
+ExecStartPre=/bin/sleep 30
+ExecStart=/bin/bash startup.sh
+Type=idle
+Restart=always
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=trainsign
+#User=pi
+#Group=pi
+Environment=NODE_ENV=production PORT=8088
+
+#[Install]
+WantedBy=multi-user.target
