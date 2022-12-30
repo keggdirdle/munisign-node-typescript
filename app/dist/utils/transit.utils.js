@@ -1,13 +1,20 @@
 import { Favorites } from '../favorites/favorites.js';
 export class TransitUtils {
     static displayAlert(alert, eventEmitter) {
-        alert = alert["data"][0].text.replaceAll('\n', ' ');
+        //remove DMs
+        alert = alert["data"].filter(a => !a.text.startsWith('@'))[0].text.replaceAll('\n', ' ').trim();
+        alert = alert.split('https');
+        if (alert.length > 1) {
+            alert.pop();
+            alert = alert.join('. ');
+        }
+        alert = ' '.repeat(19) + alert;
         for (var i = 0; i < alert.length; i++) {
             delay(i, alert.length);
         }
         function delay(i, total) {
             setTimeout(() => {
-                console.log(alert.substring(i, i + 19));
+                console.log(alert.substring(i, i + (19 + 19)));
                 if (i === total - 1) {
                     eventEmitter.emit('alertsDisplayCompleted', '');
                 }
@@ -61,7 +68,15 @@ TransitUtils.mapPredictions = (predictions, mappedLines) => {
                 });
             }
         });
-        map.set(`${line}-${stop}-${mappedLines.get(line)}`, output.sort((a, b) => { return a - b; }).slice(0, 2));
+        if (output.length > 1) {
+            map.set(`${line}-${stop}-${mappedLines.get(line)}`, output.sort((a, b) => { return a - b; }).slice(0, 2));
+        }
+        else if (output.length === 1) {
+            map.set(`${line}-${stop}-${mappedLines.get(line)}`, output);
+        }
+        else {
+            return;
+        }
     });
     return TransitUtils.formatArrivalTimes(map);
 };

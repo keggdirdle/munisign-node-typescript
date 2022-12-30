@@ -14,7 +14,7 @@ Transit.getPredictionData = async (transitApiKey) => {
     return predictions;
 };
 Transit.getLatestAlert = async (twitterApiKey) => {
-    let response = await fetch('https://api.twitter.com/2/users/109702390/tweets', {
+    let response = await fetch('https://api.twitter.com/2/users/109702390/tweets?exclude=retweets&tweet.fields=text', {
         method: "GET",
         headers: { "Authorization": `Bearer ${twitterApiKey}` }
     });

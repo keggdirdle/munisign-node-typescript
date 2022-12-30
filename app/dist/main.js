@@ -2,9 +2,11 @@ import ip from 'ip';
 import { TransitUtils } from './utils/transit.utils.js';
 import { EventEmitter } from 'events';
 import { Transit } from './api/transit/transit.js';
-import { transitApiKey, weatherApiKey, twitterApiKey } from './api-keys.js';
+import { transitApiKey, weatherApiKey, twitterApiKey } from './config.js';
 import { Weather } from './api/weather/weather.js';
 import dayjs from 'dayjs';
+import { WeatherUtils } from './utils/weather.utils.js';
+import { Display } from './utils/display.utils.js';
 const eventEmitter = new EventEmitter();
 let lineDataStore = new Map();
 let predictionDataStore = new Map();
@@ -15,11 +17,8 @@ let weatherDataStore = {};
 //mapRoutes 0s
 //display alert ?s
 //start rotation engine
-const display = (string1, obj = undefined) => {
-    console.log(string1, obj);
-};
 const init = () => {
-    display('Registering ...');
+    Display.show('Registering ...', true);
     setTimeout(() => {
         eventEmitter.emit('registered', () => { });
     }, 2000);
@@ -28,7 +27,7 @@ eventEmitter.on('registered', () => {
     displayIp();
 });
 const displayIp = () => {
-    display(ip.address());
+    Display.show(ip.address(), true);
     setTimeout(() => {
         eventEmitter.emit('ipDisplayed', () => { });
     }, 2000);
@@ -50,7 +49,7 @@ const getLastestAlert = () => {
     Transit.getLatestAlert(twitterApiKey).then(alert => TransitUtils.displayAlert(alert, eventEmitter));
 };
 eventEmitter.on('alertsDisplayCompleted', () => {
-    display('lineDataStore', lineDataStore);
+    //display('lineDataStore', lineDataStore);
     eventEmitter.emit('startRotation', () => { });
 });
 // rotation
@@ -68,7 +67,9 @@ const runNext = (runTime) => {
     }
 };
 const loadWeatherData = (runTime) => {
-    Weather.getForcast(weatherApiKey).then((weather) => { weatherDataStore = weather.list[0]; });
+    Weather.getForcast(weatherApiKey)
+        .then(WeatherUtils.mapWeatherData)
+        .then(weather => weatherDataStore = weather);
     runNext(runTime);
 };
 const loadPredictions = (runTime) => {
@@ -78,16 +79,43 @@ const loadPredictions = (runTime) => {
     runNext(runTime);
 };
 const showDateTime = (runTime) => {
-    display(dayjs().format('dddd MM/DD/YYYY h:mm A'));
+    const dayOfWeek = dayjs().format('dddd');
+    const dateTime = dayjs().format('MM/DD/YYYY h:mm A');
+    Display.clear();
+    Display.show(dayOfWeek, true);
+    Display.show(dateTime, true);
     runNext(runTime);
 };
 const displayWeather = (runTime) => {
-    display(weatherDataStore);
+    const temp = `${Math.ceil(weatherDataStore.list[0].main.temp)}F`;
+    const AQI = `AQ: ${weatherDataStore.list[0].airLabel}`;
+    const forecast = weatherDataStore.list[0].weather[0].main;
+    Display.show(`${(temp)}   ${AQI}`, true);
+    Display.show(forecast, true);
     runNext(runTime);
 };
 const displayPredictions = (runTime) => {
-    display(predictionDataStore);
+    loopThroughPredictions(0, runTime);
     runNext(runTime);
+};
+const loopThroughPredictions = (index = 0, runTime) => {
+    const timer = setTimeout(() => {
+        const key = Array.from(predictionDataStore.keys())[index];
+        const line = `${key.split('-')[0]} ${key.split('-')[2]}`;
+        const prediction = predictionDataStore.get(key);
+        index === predictionDataStore.size - 1 ? index = 0 : index++;
+        delay(line, prediction, index);
+    }, index * 2000);
+    timers.push(timer);
+    setTimeout(() => {
+        clearTimeout(timer);
+        console.log('timerCleared', runTime);
+    }, runTime);
+    function delay(line, prediction, index) {
+        Display.show(line, true);
+        Display.show(prediction, true);
+        loopThroughPredictions(index, runTime);
+    }
 };
 const workFlow = [
     {

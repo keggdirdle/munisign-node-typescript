@@ -18,32 +18,45 @@ export class TransitUtils {
             output = [];
             predictions.Entities.forEach((a) => {
                 if (a.TripUpdate.Trip.RouteId === line.toString()) {
-                    a.TripUpdate.StopTimeUpdates.forEach((b) => {
-                       
+                    a.TripUpdate.StopTimeUpdates.forEach((b) => {    
                         if (b.StopId === stop.toString() && (b.Arrival.Time * 1000) > new Date().getTime()) {
                             output.push(Math.floor((b.Arrival.Time * 1000 - new Date().getTime()) / 1000 / 60))
                         } else return
                     })
                 }
             })
-            map.set(`${line}-${stop}-${mappedLines.get(line)}`, output.sort((a, b) => { return a - b }).slice(0, 2));
+            if(output.length > 1) {
+                map.set(`${line}-${stop}-${mappedLines.get(line)}`, output.sort((a, b) => { return a - b }).slice(0, 2));
+            } else if (output.length === 1) {
+                map.set(`${line}-${stop}-${mappedLines.get(line)}`, output);
+            } else {
+                return
+            }
         })
         return TransitUtils.formatArrivalTimes(map);
     }
 
     static displayAlert(alert, eventEmitter) {
-        alert = alert["data"][0].text.replaceAll('\n',' ');
+        //remove DMs
+        alert = alert["data"].filter(a => !a.text.startsWith('@'))[0].text.replaceAll('\n',' ').trim();
+        alert = alert.split('https');
+        if(alert.length > 1) {
+            alert.pop();
+            alert = alert.join('. ');
+        }
+
+        alert = ' '.repeat(19) + alert;
         for(var i = 0; i < alert.length; i++) {
             delay(i,alert.length)
           }
-          function delay(i, total) {
+        function delay(i, total) {
             setTimeout(() => {
-              console.log(alert.substring(i, i+19));
-              if(i === total - 1) {
-                eventEmitter.emit('alertsDisplayCompleted', '')
-            }
+                console.log(alert.substring(i, i+(19+19)));
+                if(i === total - 1) {
+                    eventEmitter.emit('alertsDisplayCompleted', '')
+                }
             }, i * 75);
-          }
+        }
     }
     static formatArrivalTimes(times: Map<any,any>) {
         times.forEach((value, key) => {

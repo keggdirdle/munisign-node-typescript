@@ -7,11 +7,11 @@
 # done
 
 sudo iwconfig wlan0 power off
-cd /home/pi/Muni/MuniSign/
+cd /home/pi/src/app/dist
 #git checkout -- .
 #git fetch --all
 #git reset --hard origin/master
 #npm cache clean --force
 #npm install --no-progress
 #forever start server.js
-sudo node server
+sudo node main.js

@@ -1,5 +1,5 @@
 export interface WeatherModel {
-    list: DataPoint[]
+    list?: DataPoint[]
 }
 
 export interface DataPoint {
@@ -11,7 +11,9 @@ export interface DataPoint {
     visibility: number,
     pop: number,
     sys: { pod: string},
-    dt_txt: string
+    dt_txt: string,
+    airData: AirModel,
+    airLabel: string,
 }
 
 export interface Main {
@@ -37,4 +39,31 @@ export interface Weather {
     main: string,
     description: string,
     icon: string
+}
+
+export interface AirModel {
+    coord: Coord;
+    list: List[];
+} 
+
+export interface Coord {
+    lon: number,
+    lat: number
+}
+
+export interface List {
+    main: { aqi : number },
+    components: Components,
+    dt: { dt : number }
+}
+
+export interface Components {
+    co: number,
+    no: number,
+    no2: number,
+    o3: number,
+    so2: number,
+    pm2_5: number,
+    pm10: number,
+    nh3: number
 }
