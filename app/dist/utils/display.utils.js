@@ -3,7 +3,7 @@ import { Config } from "../config.js";
 export class Display {
 }
 _a = Display;
-Display.show = (string, center, obj = undefined) => {
+Display.show = (string, center = false, obj = undefined) => {
     if (Config.debug) {
         console.log(center ? _a.center(string) : string, obj);
     }

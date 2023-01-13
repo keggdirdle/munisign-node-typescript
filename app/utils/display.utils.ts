@@ -3,7 +3,7 @@ import { Config } from "../config.js"
 
 export class Display {
 
-    static show = (string: string, center:boolean, obj:any = undefined) => {
+    static show = (string: string, center:boolean = false, obj:any = undefined) => {
         if(Config.debug) {
             console.log(center ? this.center(string) : string, obj)
         }

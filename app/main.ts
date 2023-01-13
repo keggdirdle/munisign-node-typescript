@@ -2,7 +2,7 @@ import ip from 'ip';
 import { TransitUtils } from './utils/transit.utils.js';
 import { EventEmitter } from 'events';
 import { Transit } from './api/transit/transit.js';
-import { transitApiKey, weatherApiKey, twitterApiKey } from './config.js';
+import { transitApiKey, weatherApiKey, twitterApiKey, Config } from './config.js';
 import { Weather } from './api/weather/weather.js';
 import { WeatherModel } from './models/weather.model.js';
 import dayjs from 'dayjs';
@@ -14,6 +14,9 @@ let lineDataStore: Map<string,string> = new Map();
 let predictionDataStore : Map<string, string> = new Map();
 let weatherDataStore: WeatherModel = {};
 
+let timer: any;
+let isDebug = false;
+
 //startup
     //register 2s
     //display IP 2s
@@ -23,6 +26,7 @@ let weatherDataStore: WeatherModel = {};
 
 
 const init = () => {
+    isDebug = process.argv.slice(2).toString() === '--debug' ? true : false;
     Display.show('Registering ...', true);
     setTimeout(() => {
         eventEmitter.emit('registered', () => {})
@@ -43,6 +47,9 @@ eventEmitter.on('ipDisplayed', () => {
  })
 
  const loadLineData = () => {
+    if (isDebug) {
+        Display.show('Getting Line Data...')
+    } 
     Transit.getLineData(transitApiKey).then(lineData => eventEmitter.emit('lineDataLoaded', lineData))
  }
 
@@ -56,6 +63,9 @@ eventEmitter.on('ipDisplayed', () => {
 })
 
 const getLastestAlert = () => {
+    if (isDebug) {
+        Display.show('Getting Muni Alert...')
+    }
     Transit.getLatestAlert(twitterApiKey).then(alert => TransitUtils.displayAlert(alert, eventEmitter))
 }
 eventEmitter.on('alertsDisplayCompleted', () => {
@@ -80,6 +90,9 @@ const runNext = (runTime: number) => {
 }
 
 const loadWeatherData = (runTime: number) => {
+    if (isDebug) {
+        Display.show('Loading Weather Data...')
+    }
     Weather.getForcast(weatherApiKey)
     .then(WeatherUtils.mapWeatherData)
     .then(weather => weatherDataStore = weather)
@@ -87,6 +100,9 @@ const loadWeatherData = (runTime: number) => {
 }
 
 const loadPredictions = (runTime: number) => {
+    if (isDebug) {
+        Display.show('Getting Prediction Data...')
+    }
     Transit.getPredictionData(transitApiKey)
     .then(predictions => TransitUtils.mapPredictions(predictions, lineDataStore))
     .then(predictions => predictionDataStore = predictions)
@@ -111,27 +127,32 @@ const displayWeather = (runTime: number) => {
     runNext(runTime);
 }
 
+
 const displayPredictions = (runTime: number) => {
     loopThroughPredictions(0,runTime);
+    setTimeout(() => {
+        clearTimeout(timer);
+        console.log("done.");
+      }, runTime);
     runNext(runTime);
 }
 
-const loopThroughPredictions = (index = 0, runTime) => {
-    const timer = setTimeout(() => {
+const loopThroughPredictions = (index, runTime) => {
+    timer = setTimeout(() => {
         const key = Array.from(predictionDataStore.keys())[index];  
         const line = `${key.split('-')[0]} ${key.split('-')[2]}`;
         const prediction = predictionDataStore.get(key);
         index === predictionDataStore.size - 1 ? index = 0 : index++;
-        delay(line, prediction, index);
-    }, index * 2000);
-    timers.push(timer);
+        display(line, prediction, index);
+    }, Config.loopDuration);
+    //timers.push(timer);
 
-    setTimeout(() => {
-        clearTimeout(timer);
-        //console.log('timerCleared', runTime)
-    }, runTime)
+    // setTimeout(() => {
+    //     clearTimeout(timer);
+    //     //console.log('timerCleared', runTime)
+    // }, runTime)
         
-    function delay(line, prediction, index) {
+    function display(line, prediction, index) {
         Display.show(line, true)
         Display.show(prediction, true)
         loopThroughPredictions(index, runTime)
@@ -177,7 +198,6 @@ const workFlow = [
     }
 ]
 
-let timer: any;
 const timers = [];
 let isError = false;
 let i = 0;

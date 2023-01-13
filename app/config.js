@@ -4,4 +4,5 @@ export const twitterApiKey = "AAAAAAAAAAAAAAAAAAAAAMdYkwEAAAAA2M%2BGnrraMrM15vTE
 
 export class Config {
     static debug = true;
+    static loopDuration = 2000;
 }
