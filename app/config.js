@@ -3,6 +3,6 @@ export const weatherApiKey = '612f4aa40986989c6b698bc2bf4a1b01';
 export const twitterApiKey = "AAAAAAAAAAAAAAAAAAAAAMdYkwEAAAAA2M%2BGnrraMrM15vTElEvwIKZC5YU%3Dp7QlkE5zGgk2FyecunPNfVf5IiPPudDBIFbZZpujG8s0LQ9Qei";
 
 export class Config {
-    static debug = true;
+    static sendToConsole = true;
     static loopDuration = 2000;
 }

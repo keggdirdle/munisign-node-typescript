@@ -1,16 +1,20 @@
 import { Config } from "../config.js"
+import { SignUtils } from "./sign.utils.js"
 
 
 export class Display {
 
     static show = (string: string, center:boolean = false, obj:any = undefined) => {
-        if(Config.debug) {
+        if(Config.sendToConsole) {
             console.log(center ? this.center(string) : string, obj)
+        } else {
+            const output = center ? this.center(string) : string;
+            SignUtils.send(output);
         }
     }
 
     static clear = () => {
-        if(!Config.debug) {
+        if(!Config.sendToConsole) {
             console.log('\n')
         }
     }

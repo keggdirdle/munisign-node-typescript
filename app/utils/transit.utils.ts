@@ -1,6 +1,7 @@
 
 import { Favorites } from '../favorites/favorites.js'
 import { Line } from '../models/transit.model.js';
+import { Display } from './display.utils.js';
 
 export class TransitUtils {
     static mapLines = (lineData: Line[], eventEmitter)  => {
@@ -51,7 +52,7 @@ export class TransitUtils {
           }
         function delay(i, total) {
             setTimeout(() => {
-                console.log(alert.substring(i, i+(19+19)));
+                Display.show(alert.substring(i, i+(19+19)));
                 if(i === total - 1) {
                     eventEmitter.emit('alertsDisplayCompleted', '')
                 }
