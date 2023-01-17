@@ -1,11 +1,15 @@
 import { AirModel, WeatherModel } from "../../models/weather.model.js";
+import { Display } from "../../utils/display.utils.js";
 
 export class Weather {
     static getForcast = async (weatherApiKey): Promise<WeatherModel> => {
-        let response = await fetch(`http://api.openweathermap.org/data/2.5/forecast?zip=94103,us&units=imperial&appid=${weatherApiKey}`);
+      const url = `http://api.openweathermap.org/data/2.5/forecast?zip=94103,us&units=imperial&appid=${weatherApiKey}`;
+        let response = await fetch(url);
         let weatherData: WeatherModel = await response.json() 
         let airData: AirModel = await Weather.getAirQuality(weatherApiKey);
         weatherData.list[0].airData = airData;
+        Display.show('weatherRequest', false, url)
+        Display.show('weatherData', false, weatherData)
         return weatherData;
       }
 

@@ -4,9 +4,13 @@ import { SignUtils } from "./sign.utils.js"
 
 export class Display {
 
-    static show = (string: string, center:boolean = false, obj:any = undefined) => {
+    static show = (string: string, center:boolean = false, obj:any = null) => {
         if(Config.sendToConsole) {
-            console.log(center ? this.center(string) : string, obj)
+            if (obj) {
+                console.log(center ? this.center(string) : string, obj)
+            } else {
+                console.log(center ? this.center(string) : string)
+            }
         } else {
             const output = center ? this.center(string) : string;
             SignUtils.send(output);

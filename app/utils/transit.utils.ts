@@ -53,6 +53,7 @@ export class TransitUtils {
         function delay(i, total) {
             setTimeout(() => {
                 Display.show(alert.substring(i, i+(19+19)));
+                Display.clear();
                 if(i === total - 1) {
                     eventEmitter.emit('alertsDisplayCompleted', '')
                 }
@@ -69,10 +70,10 @@ export class TransitUtils {
                     if(num === 0) {
                         num1 = "Arriving"
                     } else {
-                        num1 = num + 'min'
+                        num1 = num + ' min'
                     }
                 } else {
-                    num2 = '& ' + num + 'min'
+                    num2 = '& ' + num + ' min'
                 }
                 i++;
             })
