@@ -8,8 +8,8 @@ export class Weather {
         let weatherData: WeatherModel = await response.json() 
         let airData: AirModel = await Weather.getAirQuality(weatherApiKey);
         weatherData.list[0].airData = airData;
-        Display.show('weatherRequest', false, url)
-        Display.show('weatherData', false, weatherData)
+        //Display.show('weatherRequest', false, url)
+        //Display.show('weatherData', false, weatherData)
         return weatherData;
       }
 

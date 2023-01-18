@@ -51,13 +51,15 @@ export class TransitUtils {
             delay(i,alert.length)
           }
         function delay(i, total) {
-            setTimeout(() => {
+            const timer = setTimeout(() => {
                 Display.show(alert.substring(i, i+(19+19)));
-                Display.clear();
+                setTimeout(() => {
+                    Display.clear();
+                }, 148)
                 if(i === total - 1) {
                     eventEmitter.emit('alertsDisplayCompleted', '')
                 }
-            }, i * 75);
+            }, i * 150);
         }
     }
     static formatArrivalTimes(times: Map<any,any>) {

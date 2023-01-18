@@ -26,7 +26,8 @@ let isDebug = false;
 
 
 const init = () => {
-    isDebug = process.argv.slice(2).toString() === '--debug' ? true : Config.debug ? true : false;
+    //isDebug = process.argv.slice(2).toString() === '--debug' ? true : Config.debug ? true : false;
+    isDebug = false;
     Display.show('Registering ...', true);
     setTimeout(() => {
         eventEmitter.emit('registered', () => {})
@@ -37,6 +38,7 @@ eventEmitter.on('registered', () => {
  })
 
 const displayIp = () => {
+    Display.clear();
     Display.show(ip.address(), true);
     setTimeout(() => {
         eventEmitter.emit('ipDisplayed', () => {})
@@ -122,6 +124,7 @@ const displayWeather = (runTime: number) => {
     const temp: string = `${Math.ceil(weatherDataStore.list[0].main.temp)} F`;
     const AQI: string =`AQ: ${weatherDataStore.list[0].airLabel}`;
     const forecast: string = weatherDataStore.list[0].weather[0].main;
+    Display.clear();
     Display.show(`${(temp)}   ${AQI}`, true)
     Display.show(forecast, true)
     runNext(runTime);

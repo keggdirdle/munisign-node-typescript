@@ -3,7 +3,7 @@ export class Transit {
     static getLineData = async (transitApiKey): Promise<Line[]> => {
         let response = await fetch(`https://api.511.org/transit/lines?api_key=${transitApiKey}&operator_id=SF&format=JSON`);
         let lineData = await response.json();
-        console.log('remaining requests', response.headers.get('ratelimit-remaining'));
+        //console.log('remaining requests', response.headers.get('ratelimit-remaining'));
         return lineData;
     }
 
