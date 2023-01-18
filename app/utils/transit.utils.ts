@@ -55,7 +55,7 @@ export class TransitUtils {
                 Display.show(alert.substring(i, i+(19+19)));
                 setTimeout(() => {
                     Display.clear();
-                }, 148)
+                }, 140)
                 if(i === total - 1) {
                     eventEmitter.emit('alertsDisplayCompleted', '')
                 }
