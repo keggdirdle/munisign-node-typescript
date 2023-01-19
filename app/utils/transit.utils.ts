@@ -1,4 +1,5 @@
 
+import { Config } from '../config.js';
 import { Favorites } from '../favorites/favorites.js'
 import { Line } from '../models/transit.model.js';
 import { Display } from './display.utils.js';
@@ -55,15 +56,13 @@ export class TransitUtils {
                 Display.show(alert.substring(i, i+(19+19)));
                 if (i < total -1) {
                     setTimeout(() => {
-                    Display.clear();
-                    console.log('clear' + i)
-                    console.log('total' + total)
-                    }, 100)
+                        Display.clear();
+                    }, Config.scrollSpeed - 10)
                 }
                 if(i === total - 1) {
                     eventEmitter.emit('alertsDisplayCompleted', '')
                 }
-            }, i * 150);
+            }, i * Config.scrollSpeed);
         }
     }
     static formatArrivalTimes(times: Map<any,any>) {

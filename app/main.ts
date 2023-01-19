@@ -71,8 +71,6 @@ const getLastestAlert = () => {
     Transit.getLatestAlert(twitterApiKey).then(alert => TransitUtils.displayAlert(alert, eventEmitter))
 }
 eventEmitter.on('alertsDisplayCompleted', () => {
-    //display('lineDataStore', lineDataStore);
-    Display.clear();
     eventEmitter.emit('startRotation', () => {})
 })
 
@@ -122,11 +120,13 @@ const showDateTime = (runTime: number) => {
 }
 
 const displayWeather = (runTime: number) => {
-    const temp: string = `${Math.ceil(weatherDataStore.list[0].main.temp)}F`;
+    const tempF = Math.ceil(weatherDataStore.list[0].main.temp);
+    const tempC = Math.ceil((weatherDataStore.list[0].main.temp - 32) * .5556)
+    const temp: string = `${tempF}F/${tempC}C`;
     const AQI: string =`AQ:${weatherDataStore.list[0].airLabel}`;
     const forecast: string = weatherDataStore.list[0].weather[0].main;
     Display.clear();
-    Display.show(`${(temp)}   ${AQI}`, true)
+    Display.show(`${(temp)} ${AQI}`, true)
     Display.show(forecast, true)
     runNext(runTime);
 }
@@ -144,7 +144,7 @@ const displayPredictions = (runTime: number) => {
 const loopThroughPredictions = (index, runTime) => {
     timer = setTimeout(() => {
         const key = Array.from(predictionDataStore.keys())[index];  
-        const line = `${key.split('-')[0]}-${capitalize(key.split('-')[2].toLowerCase())}`;
+        const line = `${key.split('-')[0]}-${key.split('-')[2].toLowerCase()}`;
         const prediction = predictionDataStore.get(key);
         index === predictionDataStore.size - 1 ? index = 0 : index++;
         display(line, prediction, index);
@@ -160,11 +160,6 @@ const loopThroughPredictions = (index, runTime) => {
         Display.show(line, true)
         Display.show(prediction, true)
         loopThroughPredictions(index, runTime)
-    }
-
-    function capitalize(string)
-    {
-        return string[0].toUpperCase() + string.slice(1);
     }
 }
 
