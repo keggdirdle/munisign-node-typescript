@@ -72,6 +72,7 @@ const getLastestAlert = () => {
 }
 eventEmitter.on('alertsDisplayCompleted', () => {
     //display('lineDataStore', lineDataStore);
+    Display.clear();
     eventEmitter.emit('startRotation', () => {})
 })
 

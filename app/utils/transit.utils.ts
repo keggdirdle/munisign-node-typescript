@@ -53,9 +53,13 @@ export class TransitUtils {
         function delay(i, total) {
             const timer = setTimeout(() => {
                 Display.show(alert.substring(i, i+(19+19)));
-                setTimeout(() => {
+                if (i < total -1) {
+                    setTimeout(() => {
                     Display.clear();
-                }, 140)
+                    console.log('clear' + i)
+                    console.log('total' + total)
+                    }, 100)
+                }
                 if(i === total - 1) {
                     eventEmitter.emit('alertsDisplayCompleted', '')
                 }
