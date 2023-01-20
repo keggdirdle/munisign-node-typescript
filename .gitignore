@@ -1,2 +1,3 @@
 api-keys.js
 **/app/dist/**
+**/node_modules/**
