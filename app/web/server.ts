@@ -3,13 +3,14 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import { Favorites } from '../favorites/favorites.js';
 import { Main } from '../main.js';
+import { Display } from '../utils/display.utils.js';
 
 export class WebServer {
     static runWebServer = () => {
         const app = express();
         const __filename = fileURLToPath(import.meta.url);
         app.use(express.static(path.join(__filename + '/../../../web/public/')));
-        const port = 2727;
+        const port = 8080;
 
         app.listen(port, () => {
             console.log(`Example app listening on port ${port}`)
@@ -20,8 +21,9 @@ export class WebServer {
             res.sendFile(home + "index.html");
         })
 
-        app.get('/start', () => {
+        app.get('/start', (req, res) => {
             Main.init();
+            res.end();
         })
 
         app.get('/favorites', (req, res) => {
@@ -30,13 +32,12 @@ export class WebServer {
             res.send(favorites);
         })
 
-        // app.get('/exit', (req, res) => {
-        //     res.sendFile(home + "index.html");
+        // app.get('/end', (req, res) => {
         //     Display.clear();
-        //     timers.forEach(t => {
-        //         clearTimeout(t);
-        //     })
+        //     Main.end();
+        //     res.end();
         // })
+
         app.get('/kill', () => {
             console.log('killing')
             process.exit();

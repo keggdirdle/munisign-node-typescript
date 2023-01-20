@@ -40,6 +40,9 @@ export namespace Main {
         displayIp();
     })
 
+    // export const end = () => {
+    //     clearTimeout(timer);
+    // }
     const displayIp = () => {
         Display.clear();
         Display.show(ip.address(), true);
@@ -72,7 +75,7 @@ export namespace Main {
         if (isDebug) {
             Display.show('Getting Muni Alert...')
         }
-        Transit.getLatestAlert(twitterApiKey).then(alert => TransitUtils.displayAlert(alert, eventEmitter))
+        Transit.getLatestAlert(twitterApiKey).then(alert => TransitUtils.displayAlert(alert, eventEmitter, timer))
     }
     eventEmitter.on('alertsDisplayCompleted', () => {
         eventEmitter.emit('startRotation', () => { })
