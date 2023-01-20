@@ -24,3 +24,6 @@ Removed /etc/systemd/system/multi-user.target.wants/ensure-file-exists.service.
 
 make .cc files
 install express: npm install express
+
+run
+http://raspberrypi.local:8088/
