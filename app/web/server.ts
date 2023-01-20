@@ -7,27 +7,26 @@ import { Main } from '../main.js';
 export class WebServer {
     static runWebServer = () => {
         const app = express();
-        const port = 8088;
         const __filename = fileURLToPath(import.meta.url);
-        const home = path.join(__filename + '/../../../web/');
+        app.use(express.static(path.join(__filename + '/../../../web/public/')));
+        const port = 2727;
 
         app.listen(port, () => {
             console.log(`Example app listening on port ${port}`)
         })
 
+        const home = path.join(__filename + '/../../../web/');
         app.get('/', (req, res) => {
             res.sendFile(home + "index.html");
         })
 
         app.get('/start', () => {
-            console.log('calling init')
             Main.init();
         })
 
         app.get('/favorites', (req, res) => {
             const favorites = JSON.stringify(Array.from(Favorites.getFavorites().entries()));
             //map = new Map(JSON.parse(jsonText));
-            console.log(favorites)
             res.send(favorites);
         })
 

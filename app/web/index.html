@@ -3,15 +3,17 @@
 
 <head>
     <title>Muni</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <script src="/scripts/main.js" type="text/javascript"></script>
 </head>
 
-<body style="background-color:#474747">
-    <img
-        src="https://www.sfmta.com/sites/default/files/styles/hero/public/hero-images/2018/12/ft059_hero_image_2.jpg"></img><br />
-    <button onClick="start()">Start me bro!</button>
-    <button onClick="end()">Finish him!</button>
-    <button onClick="kill()">Kill it with fire!</button>
-    <button onClick="favorites()">See your favorites</button>
+<body>
+    <img src="/images/muni.jpg"></img><br />
+    <button class="button" onClick="start()">Start me bro!</button>
+    <button class="button" onClick="end()">Finish him!</button>
+    <button class="button" onClick="kill()">Kill it with fire!</button>
+    <button class="button" onClick="favorites()">See your favorites</button>
+    <b></b>
 </body>
 <script>
     start = () => {
@@ -22,9 +24,6 @@
     }
     kill = () => {
         location.href = '/kill'
-    }
-    favorites = () => {
-        location.href = '/favorites'
     }
 </script>
 

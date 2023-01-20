@@ -44,7 +44,6 @@ const mapPredictions = (predictions, mappedLines) => {
         })
         let map = new Map();
         map.set(`${line}-${stop}-${mappedLines.get(line)}`, output.sort((a, b) => { return a - b }).slice(0, 2));
-        console.log(map)
     })
 }
 
@@ -68,7 +67,6 @@ init = () => {
 
 const showDateTime = async (runTime) => {
     //await Display.showDateTime(configModel);
-    console.log(1);
     timer = setTimeout(() => {
         next();
     }, runTime);

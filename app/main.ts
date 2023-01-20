@@ -140,7 +140,6 @@ export namespace Main {
         loopThroughPredictions(0, runTime);
         timer = setTimeout(() => {
             clearTimeout(timer);
-            console.log("done.");
         }, runTime);
         timers.push(timer);
         runNext(runTime);
