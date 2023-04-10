@@ -7,11 +7,11 @@
 # done
 
 sudo iwconfig wlan0 power off
-cd /home/pi/src/app/dist
+cd /home/pi/src/munisign-node-typescript/app
 #git checkout -- .
 #git fetch --all
 #git reset --hard origin/master
 #npm cache clean --force
 #npm install --no-progress
 #forever start server.js
-sudo node main.js
+sudo node ./dist/main.js

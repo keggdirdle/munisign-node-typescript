@@ -7,6 +7,6 @@ favorites = () => {
         .then(data => console.log(data));
 }
 
-end = () => {
-    fetch('./end', {}).then(response => response.json())
+exit = () => {
+    fetch('./exit', {}).then(response => response.json())
 }

@@ -32,11 +32,11 @@ export class WebServer {
             res.send(favorites);
         })
 
-        // app.get('/end', (req, res) => {
-        //     Display.clear();
-        //     Main.end();
-        //     res.end();
-        // })
+        app.get('/exit', (req, res) => {
+            Display.clear();
+            Main.exit();
+            res.end();
+        })
 
         app.get('/kill', () => {
             console.log('killing')

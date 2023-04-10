@@ -18,6 +18,7 @@ let weatherDataStore: WeatherModel = {};
 let timer: any;
 let timers = [];
 let isDebug = false;
+let isRunning = false;
 
 //startup
 //register 2s
@@ -28,6 +29,8 @@ let isDebug = false;
 
 export namespace Main {
     export const init = () => {
+        if (isRunning) return;
+        isRunning = true;
         //isDebug = process.argv.slice(2).toString() === '--debug' ? true : Config.debug ? true : false;
         isDebug = false;
         Display.show('Registering ...', true);
@@ -40,9 +43,12 @@ export namespace Main {
         displayIp();
     })
 
-    // export const end = () => {
-    //     clearTimeout(timer);
-    // }
+    export const exit = () => {
+        isRunning = false;
+        Display.clear();
+        clearTimeout(timer);
+    }
+
     const displayIp = () => {
         Display.clear();
         Display.show(ip.address(), true);
@@ -255,5 +261,5 @@ export namespace Main {
         next();
     })
 }
-//init();
+Main.init();
 WebServer.runWebServer();
