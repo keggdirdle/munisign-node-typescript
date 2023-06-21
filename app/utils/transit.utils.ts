@@ -77,7 +77,7 @@ export class TransitUtils {
                     } else {
                         num1 = num + ' min'
                     }
-                } else {
+                } else if (num) {
                     num2 = '& ' + num + ' min'
                 }
                 i++;

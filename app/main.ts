@@ -2,7 +2,7 @@ import ip from 'ip';
 import { TransitUtils } from './utils/transit.utils.js';
 import { EventEmitter } from 'events';
 import { Transit } from './api/transit/transit.js';
-import { transitApiKey, weatherApiKey, twitterApiKey, Config } from './config.js';
+import { transitApiKey, weatherApiKey, twitterBearerKey, Config } from './config.js';
 import { Weather } from './api/weather/weather.js';
 import { WeatherModel } from './models/weather.model.js';
 import dayjs from 'dayjs';
@@ -81,7 +81,7 @@ export namespace Main {
         if (isDebug) {
             Display.show('Getting Muni Alert...')
         }
-        Transit.getLatestAlert(twitterApiKey).then(alert => TransitUtils.displayAlert(alert, eventEmitter, timer))
+        Transit.getLatestAlert(twitterBearerKey).then(alert => TransitUtils.displayAlert(alert, eventEmitter, timer))
     }
     eventEmitter.on('alertsDisplayCompleted', () => {
         eventEmitter.emit('startRotation', () => { })

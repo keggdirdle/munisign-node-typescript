@@ -13,12 +13,18 @@ export class Transit {
         return predictions;
     }
 
-    static getLatestAlert = async (twitterApiKey) => {
+    static getLatestAlert = async (twitterBearerKey) => {
         let response = await fetch('https://api.twitter.com/2/users/109702390/tweets?exclude=retweets&tweet.fields=text',  {
             method: "GET",
-            headers: {"Authorization" : `Bearer ${twitterApiKey}` }
+            headers: {"Authorization" : `Bearer ${twitterBearerKey}` }
         });
+        console.log(twitterBearerKey)
         let alerts = await response.json();
+        console.log(alerts);
+        alerts = { data: [{ text: alerts["detail"]}]};
+        if(response['data']) {
+            alerts = await response.json();
+        }
         return alerts;
     }
 }
