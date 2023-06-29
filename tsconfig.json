@@ -6,6 +6,7 @@
         "sourceMap": false,
         "outDir": "app/dist",
         "allowJs": true,
+        "skipLibCheck": true,
     },
     "include": [
         "app/**/*",
