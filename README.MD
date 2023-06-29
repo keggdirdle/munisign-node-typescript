@@ -27,3 +27,5 @@ install express: npm install express
 
 run
 http://raspberrypi.local:8088/
+
+![alt text](https://i.imgur.com/uhi8H3N.jpg)
