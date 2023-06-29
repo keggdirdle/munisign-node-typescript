@@ -11,7 +11,7 @@ import { Display } from './utils/display.utils.js';
 import { WebServer } from './web/server.js';
 
 const eventEmitter = new EventEmitter();
-let lineDataStore: Map<string, string> = new Map();
+export let lineDataStore: Map<string, string> = new Map();
 let predictionDataStore: Map<string, string> = new Map();
 let weatherDataStore: WeatherModel = {};
 

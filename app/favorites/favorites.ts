@@ -5,6 +5,7 @@ export class Favorites {
         favorities.set('19', '13194');
         favorities.set('14', '17129');
         favorities.set('F', '15650');
+        favorities.set('7', '15656');
         return favorities
     }
 }

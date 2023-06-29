@@ -40,7 +40,7 @@ export class Display {
     private static center = (string, charLength = 20) => {
         let sidePadding: string = "";
         if (string.length < 20) {
-          const spaceToFill: number = (charLength - string.length) + 4;
+          const spaceToFill: number = (charLength - string.length);
           const paddingSize: number = Math.floor(spaceToFill / 2);
           const paddingChar: string = ' ';
           sidePadding = paddingChar.repeat(paddingSize);

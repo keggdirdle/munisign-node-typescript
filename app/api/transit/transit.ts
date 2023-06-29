@@ -27,6 +27,11 @@ export class Transit {
         }
         return alerts;
     }
+
+    static getStops = async (transitApiKey) => {
+        let response = await fetch(`https://api.511.org/transit/stops?api_key=${transitApiKey}&operator_id=SF&format=json`);
+        return await response.json();
+    }
 }
 
 

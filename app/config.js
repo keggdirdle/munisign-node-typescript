@@ -4,7 +4,7 @@ export const twitterBearerKey = "AAAAAAAAAAAAAAAAAAAAAIu%2BoAEAAAAA88g4NAIwb46rT
 
 export class Config {
     static sendToConsole = false;
-    static debug = false;
+    static debug = true;
     static loopDuration = 5000;
     static scrollSpeed = 200;
 }

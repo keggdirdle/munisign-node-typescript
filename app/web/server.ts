@@ -2,21 +2,27 @@ import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { Favorites } from '../favorites/favorites.js';
-import { Main } from '../main.js';
+import { Main, lineDataStore } from '../main.js';
 import { Display } from '../utils/display.utils.js';
+import cors from 'cors';
+import { Transit } from '../api/transit/transit.js';
+import { transitApiKey } from '../config.js';
 
 export class WebServer {
     static runWebServer = () => {
         const app = express();
         const __filename = fileURLToPath(import.meta.url);
-        app.use(express.static(path.join(__filename + '/../../../web/public/')));
+        app.use(cors({
+            origin: '*'
+        }));
+        app.use(express.static(path.join(__filename + '/../../../web/web-admin/public/')));
         const port = 8080;
 
         app.listen(port, () => {
             console.log(`Example app listening on port ${port}`)
         })
 
-        const home = path.join(__filename + '/../../../web/');
+        const home = path.join(__filename + '/../../../web/web-admin/');
         app.get('/', (req, res) => {
             res.sendFile(home + "index.html");
         })
@@ -30,6 +36,18 @@ export class WebServer {
             const favorites = JSON.stringify(Array.from(Favorites.getFavorites().entries()));
             //map = new Map(JSON.parse(jsonText));
             res.send(favorites);
+        })
+
+        app.get('/getLines', (req, res) => {
+            const lines = JSON.stringify(Array.from(lineDataStore));
+            res.send(lines);
+        })
+
+        app.get('/getStops', (req, res) => {
+            Transit.getStops(transitApiKey).then(data => 
+                { 
+                    res.send(data);
+                });
         })
 
         app.get('/exit', (req, res) => {
