@@ -6,7 +6,7 @@ import { Main, lineDataStore } from '../main.js';
 import { Display } from '../utils/display.utils.js';
 import cors from 'cors';
 import { Transit } from '../api/transit/transit.js';
-import { transitApiKey } from '../config.js';
+import { transitApiKey } from '../keys.js';
 
 export class WebServer {
     static runWebServer = () => {
@@ -33,7 +33,7 @@ export class WebServer {
         })
 
         app.get('/favorites', (req, res) => {
-            const favorites = JSON.stringify(Array.from(Favorites.getFavorites().entries()));
+            const favorites = JSON.stringify(Array.from(Favorites.getFavorites(req).entries()));
             //map = new Map(JSON.parse(jsonText));
             res.send(favorites);
         })
@@ -43,8 +43,8 @@ export class WebServer {
             res.send(lines);
         })
 
-        app.get('/getStops', (req, res) => {
-            Transit.getStops(transitApiKey).then(data => 
+        app.get('/getStops', (req = 'SF', res) => {
+            Transit.getStops(transitApiKey, req).then(data => 
                 { 
                     res.send(data);
                 });

@@ -22,7 +22,7 @@ export class Display {
 
     static clear = () => {
         if(Config.sendToConsole) {
-           // console.log('\n')
+           console.log('\n')
         } else {
             Display.show('\n');
         }

@@ -1,4 +1,4 @@
 api-keys.js
 **/app/dist/**
 **/node_modules/**
-**/app/config.js
+**/app/keys.js

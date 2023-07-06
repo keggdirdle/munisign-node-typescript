@@ -14,4 +14,4 @@ cd /home/pi/src/munisign-node-typescript/app
 #npm cache clean --force
 #npm install --no-progress
 #forever start server.js
-sudo node ./dist/main.js
+sudo node ./dist/main.js agency=SF

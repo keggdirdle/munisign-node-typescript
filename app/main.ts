@@ -2,13 +2,16 @@ import ip from 'ip';
 import { TransitUtils } from './utils/transit.utils.js';
 import { EventEmitter } from 'events';
 import { Transit } from './api/transit/transit.js';
-import { transitApiKey, weatherApiKey, twitterBearerKey, Config } from './config.js';
+import { transitApiKey, weatherApiKey, twitterBearerKey } from './keys.js';
+import { Config } from './config.js'
 import { Weather } from './api/weather/weather.js';
 import { WeatherModel } from './models/weather.model.js';
 import dayjs from 'dayjs';
 import { WeatherUtils } from './utils/weather.utils.js';
 import { Display } from './utils/display.utils.js';
 import { WebServer } from './web/server.js';
+import { Favorites } from './favorites/favorites.js';
+import { Line } from './models/transit.model.js';
 
 const eventEmitter = new EventEmitter();
 export let lineDataStore: Map<string, string> = new Map();
@@ -19,6 +22,7 @@ let timer: any;
 let timers = [];
 let isDebug = false;
 let isRunning = false;
+let agency;
 
 //startup
 //register 2s
@@ -58,17 +62,20 @@ export namespace Main {
         timers.push(timer);
     }
     eventEmitter.on('ipDisplayed', () => {
-        loadLineData();
+        process.argv.forEach((val) => {
+            agency = val.indexOf('agency=') > -1 ? val.split('=')[1] : Config.defaultAgency;
+          });
+        loadLineData(agency.toUpperCase());
     })
 
-    const loadLineData = () => {
+    const loadLineData = (agency) => {
         if (isDebug) {
             Display.show('Getting Line Data...')
         }
-        Transit.getLineData(transitApiKey).then(lineData => eventEmitter.emit('lineDataLoaded', lineData))
+        Transit.getLineData(transitApiKey, agency).then(lineData => eventEmitter.emit('lineDataLoaded', lineData))
     }
 
-    eventEmitter.on('lineDataLoaded', (lineData) => {
+    eventEmitter.on('lineDataLoaded', (lineData: Line[]) => {
         TransitUtils.mapLines(lineData, eventEmitter);
     })
 
@@ -84,7 +91,7 @@ export namespace Main {
         Transit.getLatestAlert(twitterBearerKey).then(alert => TransitUtils.displayAlert(alert, eventEmitter, timer))
     }
     eventEmitter.on('alertsDisplayCompleted', () => {
-        eventEmitter.emit('startRotation', () => { })
+        eventEmitter.emit('startRotation')
     })
 
     // rotation
@@ -94,45 +101,45 @@ export namespace Main {
     // display weather 10 sec
     // get data from cache 40 sec
 
-    const runNext = (runTime: number) => {
+    const runNext = (runTime: number, agency: string) => {
         if (runNext) {
             timer = setTimeout(() => {
-                next();
+                next(agency);
             }, runTime);
             timers.push(timer);
         }
     }
 
-    const loadWeatherData = (runTime: number) => {
+    const loadWeatherData = (runTime: number, agency:string) => {
         if (isDebug) {
             Display.show('Loading Weather Data...')
         }
         Weather.getForcast(weatherApiKey)
             .then(WeatherUtils.mapWeatherData)
             .then(weather => weatherDataStore = weather)
-        runNext(runTime);
+        runNext(runTime, agency);
     }
 
-    const loadPredictions = (runTime: number) => {
+    const loadPredictions = (runTime: number, agency: string) => {
         if (isDebug) {
             Display.show('Getting Prediction Data...')
         }
-        Transit.getPredictionData(transitApiKey)
-            .then(predictions => TransitUtils.mapPredictions(predictions, lineDataStore))
+        Transit.getPredictionData(transitApiKey, agency)
+            .then(predictions => TransitUtils.mapPredictions(predictions, lineDataStore, agency))
             .then(predictions => predictionDataStore = predictions)
-        runNext(runTime);
+        runNext(runTime, agency);
     }
 
-    const showDateTime = (runTime: number) => {
+    const showDateTime = (runTime: number, agency: string) => {
         const dayOfWeek: string = dayjs().format('dddd');
         const dateTime: string = dayjs().format('MM/DD/YYYY h:mm A');
         Display.clear();
         Display.show(dayOfWeek, true);
         Display.show(dateTime, true);
-        runNext(runTime);
+        runNext(runTime, agency);
     }
 
-    const displayWeather = (runTime: number) => {
+    const displayWeather = (runTime: number, agency: string) => {
         const tempF = Math.ceil(weatherDataStore.list[0].main.temp);
         const tempC = Math.ceil((weatherDataStore.list[0].main.temp - 32) * .5556)
         const temp: string = `${tempF}F/${tempC}C`;
@@ -141,17 +148,17 @@ export namespace Main {
         Display.clear();
         Display.show(`${(temp)} ${AQI}`, true)
         Display.show(forecast, true)
-        runNext(runTime);
+        runNext(runTime, agency);
     }
 
 
-    const displayPredictions = (runTime: number) => {
+    const displayPredictions = (runTime: number, agency) => {
         loopThroughPredictions(0, runTime);
         timer = setTimeout(() => {
             clearTimeout(timer);
         }, runTime);
         timers.push(timer);
-        runNext(runTime);
+        runNext(runTime, agency);
     }
 
     const loopThroughPredictions = (index, runTime) => {
@@ -213,7 +220,7 @@ export namespace Main {
 
     let isError = false;
     let i = 0;
-    const next = () => {
+    const next = (agency) => {
         try {
             if (isError) {
                 stop();
@@ -228,11 +235,11 @@ export namespace Main {
             try {
                 if (hasErrors) {
                     timer = setTimeout(() => {
-                        next();
+                        next(agency);
                     }, runTime);
                     timers.push(timer);
                 } else {
-                    functionName(runTime);
+                    functionName(runTime, agency);
                 }
             } catch (err) {
                 console.log('error', err)
@@ -240,7 +247,7 @@ export namespace Main {
                 if (err.message === "Error: ETIMEDOUT" || err.message === "Error: ESOCKETTIMEDOUT") {
 
                 } else {
-                    next();
+                    next(agency);
                 }
             }
             i++;
@@ -258,7 +265,7 @@ export namespace Main {
         })
     }
     eventEmitter.once('startRotation', () => {
-        next();
+        next(agency);
     })
 }
 Main.init();

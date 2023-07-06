@@ -9,14 +9,17 @@ export class TransitUtils {
         let lines = new Map();
         lineData.forEach((line: Line) => {
             lines.set(line.PublicCode, line.Name)
+            //console.log('NAME ' + line.Name)
         });
         eventEmitter.emit('linesMapped', lines);
     }
 
-    static mapPredictions = (predictions, mappedLines): Map<string, string> => {
+    static mapPredictions = (predictions, mappedLines, agency): Map<string, string> => {
         let map = new Map();
         let output: Array<number> = [];
-        Favorites.getFavorites().forEach((stop, line) => {
+        Favorites.getFavorites(agency).forEach((stop, line) => {
+            console.log('stop', JSON.stringify(stop));
+            console.log('line', JSON.stringify(line));
             output = [];
             predictions.Entities.forEach((a) => {
                 if (a.TripUpdate.Trip.RouteId === line.toString()) {
@@ -69,7 +72,7 @@ export class TransitUtils {
         times.forEach((value, key) => {
             let i = 0;
             let num1;
-            let num2;
+            let num2 = '';
             value.forEach((num) => {
                 if (i === 0) {
                     if (num === 0) {

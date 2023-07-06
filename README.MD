@@ -21,6 +21,8 @@ If you want to disable the service, simply do:
 $ sudo systemctl disable ensure-file-exists.service 
 Removed /etc/systemd/system/multi-user.target.wants/ensure-file-exists.service.
 
+To fun from command (from app directory): node /dist.js agency={agency} defaults to SF
+
 
 make .cc files
 install express: npm install express

@@ -11,7 +11,6 @@ export class SignUtils {
 
   static send = (string) => {
     setTimeout(() => {
-      //console.log(string)
       child.stdin.write(`${string}\n`);
     }, 10);
   };
