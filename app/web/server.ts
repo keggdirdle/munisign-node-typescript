@@ -33,7 +33,8 @@ export class WebServer {
         })
 
         app.get('/favorites', (req, res) => {
-            const favorites = JSON.stringify(Array.from(Favorites.getFavorites(req).entries()));
+            const favorites = JSON.stringify(Array.from(Favorites.getFavorites(req.query['agency']).entries()));
+            
             //map = new Map(JSON.parse(jsonText));
             res.send(favorites);
         })
@@ -43,8 +44,8 @@ export class WebServer {
             res.send(lines);
         })
 
-        app.get('/getStops', (req = 'SF', res) => {
-            Transit.getStops(transitApiKey, req).then(data => 
+        app.get('/getStops', (req, res) => {
+            Transit.getStops(transitApiKey, req.query['agency']).then(data => 
                 { 
                     res.send(data);
                 });

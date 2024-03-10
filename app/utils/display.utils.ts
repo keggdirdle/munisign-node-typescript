@@ -29,12 +29,10 @@ export class Display {
     }
 
     private static capitalize = (string) => {
-        var aryString = string.split('-')
-        var tmpArray = []
-        aryString.forEach((a) => {
-            tmpArray.push(a[0].toUpperCase() + a.substr(1));
-        })
-        return tmpArray.join('-')
+        //e.g. 14-mission
+        //if(!string.indexOf('-')) return;
+        //console.log(string);
+        return string.replace(/(^\w{1})|(\s+\w{1}|-\w{1})/g, letter => letter.toUpperCase()).replace(/Min/g, 'min');
     }
 
     private static center = (string, charLength = 20) => {

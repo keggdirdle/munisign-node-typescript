@@ -1,12 +1,12 @@
 
-export interface IFavorite {
+export type Favorite = {
     agency: string,
     line: string,
     stop: string,
 }
 
 export class Favorites {
-    protected static favorites: IFavorite[] = [{
+    protected static favorites: Favorite[] = [{
         agency: 'SF',
         line: '27', 
         stop: '13194'
@@ -33,8 +33,18 @@ export class Favorites {
     },
     {
         agency: 'SF',
-        line: '49',
-        stop: '18105'
+        line: '21',
+        stop: '15071'
+    },
+    {
+        agency: 'SF',
+        line: '90',
+        stop: '18088'
+    },
+    {
+        agency: 'SF',
+        line: 'NOWL',
+        stop: '15692'
     },
     {
         agency: 'BA',
@@ -42,8 +52,8 @@ export class Favorites {
         stop: 'CIVC'
     }
 ]
-    static getFavorites(agency) {
-        const faves = Favorites.favorites.filter(a => a.agency = agency.toUpperCase());
+    static getFavorites(agency: string) {
+        const faves = Favorites.favorites.filter(a => a.agency === agency.toUpperCase());
         let favorities = new Map();
         faves.forEach((fave) => {
             favorities.set(fave.line, fave.stop);

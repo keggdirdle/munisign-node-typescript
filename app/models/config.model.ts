@@ -1,3 +1,3 @@
-export interface Config {
+export type Config = {
     debug: boolean;
 }

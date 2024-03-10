@@ -20,7 +20,6 @@ let weatherDataStore: WeatherModel = {};
 
 let timer: any;
 let timers = [];
-let isDebug = false;
 let isRunning = false;
 let agency;
 
@@ -35,8 +34,6 @@ export namespace Main {
     export const init = () => {
         if (isRunning) return;
         isRunning = true;
-        //isDebug = process.argv.slice(2).toString() === '--debug' ? true : Config.debug ? true : false;
-        isDebug = false;
         Display.show('Registering ...', true);
         timer = setTimeout(() => {
             eventEmitter.emit('registered', () => { })
@@ -69,10 +66,16 @@ export namespace Main {
     })
 
     const loadLineData = (agency) => {
-        if (isDebug) {
-            Display.show('Getting Line Data...')
+        try {
+            if (Config.debug) {
+                Display.show('Getting Line Data...')
+            }
+            Transit.getLineData(transitApiKey, agency).then(lineData => eventEmitter.emit('lineDataLoaded', lineData))
         }
-        Transit.getLineData(transitApiKey, agency).then(lineData => eventEmitter.emit('lineDataLoaded', lineData))
+        catch(e) {
+            console.log(e);
+        }
+
     }
 
     eventEmitter.on('lineDataLoaded', (lineData: Line[]) => {
@@ -85,7 +88,7 @@ export namespace Main {
     })
 
     const getLastestAlert = () => {
-        if (isDebug) {
+        if (Config.debug) {
             Display.show('Getting Muni Alert...')
         }
         Transit.getLatestAlert(twitterBearerKey).then(alert => TransitUtils.displayAlert(alert, eventEmitter, timer))
@@ -111,7 +114,7 @@ export namespace Main {
     }
 
     const loadWeatherData = (runTime: number, agency:string) => {
-        if (isDebug) {
+        if (Config.debug) {
             Display.show('Loading Weather Data...')
         }
         Weather.getForcast(weatherApiKey)
@@ -121,7 +124,7 @@ export namespace Main {
     }
 
     const loadPredictions = (runTime: number, agency: string) => {
-        if (isDebug) {
+        if (Config.debug) {
             Display.show('Getting Prediction Data...')
         }
         Transit.getPredictionData(transitApiKey, agency)

@@ -18,13 +18,11 @@ export class TransitUtils {
         let map = new Map();
         let output: Array<number> = [];
         Favorites.getFavorites(agency).forEach((stop, line) => {
-            console.log('stop', JSON.stringify(stop));
-            console.log('line', JSON.stringify(line));
             output = [];
             predictions.Entities.forEach((a) => {
                 if (a.TripUpdate.Trip.RouteId === line.toString()) {
                     a.TripUpdate.StopTimeUpdates.forEach((b) => {
-                        if (b.StopId === stop.toString() && (b.Arrival.Time * 1000) > new Date().getTime()) {
+                        if (b.StopId === stop.toString() && (b.Arrival?.Time * 1000) > new Date().getTime()) {
                             output.push(Math.floor((b.Arrival.Time * 1000 - new Date().getTime()) / 1000 / 60))
                         } else return
                     })

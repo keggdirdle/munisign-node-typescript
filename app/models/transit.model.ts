@@ -1,4 +1,4 @@
-export interface Line {
+export type Line = {
     Id: string,
     Name: string,
     TransportMode: string,

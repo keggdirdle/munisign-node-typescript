@@ -1,8 +1,8 @@
-export interface WeatherModel {
+export type WeatherModel = {
     list?: DataPoint[]
 }
 
-export interface DataPoint {
+export type DataPoint = {
     dt: number,
     main: Main,
     weather: Weather[],
@@ -16,7 +16,7 @@ export interface DataPoint {
     airLabel: string,
 }
 
-export interface Main {
+export type Main = {
     temp: number,
     feels_like: number,
     temp_min: number,
@@ -28,36 +28,36 @@ export interface Main {
     temp_kf: number     
 }
 
-export interface Wind {
+export type Wind  ={
     speed: number, 
     deg: number, 
     gust: number
 }
 
-export interface Weather {
+export type Weather  ={
     id: number,
     main: string,
     description: string,
     icon: string
 }
 
-export interface AirModel {
+export type AirModel ={
     coord: Coord;
     list: List[];
 } 
 
-export interface Coord {
+export type Coord  ={
     lon: number,
     lat: number
 }
 
-export interface List {
+export type List = {
     main: { aqi : number },
     components: Components,
     dt: { dt : number }
 }
 
-export interface Components {
+export type Components = {
     co: number,
     no: number,
     no2: number,
