@@ -41,6 +41,9 @@ export class TransitUtils {
 
     static displayAlert(alert, eventEmitter, timer) {
         //remove DMs
+        console.log('-----')
+        console.log(alert)
+        console.log('-----')
         alert = alert["data"].filter(a => !a.text.startsWith('@'))[0].text.replaceAll('\n', ' ').trim();
         alert = alert.split('https');
         if (alert.length > 1) {

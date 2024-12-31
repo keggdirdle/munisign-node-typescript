@@ -19,11 +19,10 @@ export class Transit {
             headers: {"Authorization" : `Bearer ${twitterBearerKey}` }
         });
         let alerts = await response.json();
-        console.log(JSON.stringify(alerts));
-        alerts = { data: [{ text: alerts["detail"]}]};
-        if(response['data']) {
-            
-            alerts = await response.json();
+         console.log(JSON.stringify(alerts));
+         //error
+        if(alerts["detail"]) {
+            return { data: [{ text: alerts["detail"]}]};
         }
         return alerts;
     }

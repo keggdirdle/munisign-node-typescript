@@ -12,6 +12,7 @@ import { Display } from './utils/display.utils.js';
 import { WebServer } from './web/server.js';
 import { Favorites } from './favorites/favorites.js';
 import { Line } from './models/transit.model.js';
+import { Logger } from './utils/logger.js'
 
 const eventEmitter = new EventEmitter();
 export let lineDataStore: Map<string, string> = new Map();
@@ -31,10 +32,13 @@ let agency;
 //start rotation engine
 
 export namespace Main {
+    const logger = new Logger();
     export const init = () => {
         if (isRunning) return;
         isRunning = true;
+        
         Display.show('Registering ...', true);
+        logger.trackMessage('Train Sign Service Started', 'kenneth.eldridge@gmail.com');
         timer = setTimeout(() => {
             eventEmitter.emit('registered', () => { })
         }, 2000)
@@ -73,6 +77,7 @@ export namespace Main {
             Transit.getLineData(transitApiKey, agency).then(lineData => eventEmitter.emit('lineDataLoaded', lineData))
         }
         catch(e) {
+            logger.trackMessage(e.message, 'kenneth.eldridge@gmail.com');
             console.log(e);
         }
 
@@ -156,7 +161,11 @@ export namespace Main {
 
 
     const displayPredictions = (runTime: number, agency) => {
-        loopThroughPredictions(0, runTime);
+        if(!predictionDataStore) {
+            Display.show('No Lines Loaded', true)
+        } else {
+            loopThroughPredictions(0, runTime);
+        }
         timer = setTimeout(() => {
             clearTimeout(timer);
         }, runTime);
@@ -165,8 +174,8 @@ export namespace Main {
     }
 
     const loopThroughPredictions = (index, runTime) => {
+        const key = Array.from(predictionDataStore.keys())[index];
         timer = setTimeout(() => {
-            const key = Array.from(predictionDataStore.keys())[index];
             const line = `${key.split('-')[0]}-${key.split('-')[2].toLowerCase()}`;
             const prediction = predictionDataStore.get(key);
             index === predictionDataStore.size - 1 ? index = 0 : index++;
@@ -256,6 +265,7 @@ export namespace Main {
             i++;
             i === workFlow.length ? i = 0 : i = i;
         } catch (error) {
+            logger.trackMessage(error.message, 'kenneth.eldridge@gmail.com');
             workFlow.find(a => a.order === i).hasErrors = true;
             console.log('error', error)
             isError = true;
